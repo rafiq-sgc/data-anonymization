@@ -132,7 +132,7 @@ class OnlyCsvToParquet():
                 success += 1
                 print(count, match, success, file_size, file)
                 print(datetime.now())
-            break
+            # break
         return True
     def csv_to_parquet_by_pyspark(self, file_dir, dest_dir, check_dir=None):
         dir_list = os.listdir(file_dir)
@@ -423,6 +423,7 @@ class OnlyCsvToParquet():
 
                 data_dict = {}
                 # ipdb.set_trace()
+                datetime_column = []
                 for indx, item in enumerate(csv_data):
                     gc.collect()
                     dtype = self.get_column_data_type(file_name.split('.')[0].rstrip('_'), item)
@@ -452,7 +453,13 @@ class OnlyCsvToParquet():
                             print(f"{item}, length of data : {len(data)}")
                             data_dict[item] = data
                         elif dtype in ['timestamp', 'datetime', 'date', 'time', 'smalldatetime']:
-                            data = list(map(self.convert_to_datetime, data_list))
+                            # data = list(map(self.convert_to_datetime, data_list))
+                            datetime_obj = {
+                            'column': item,
+                            'type': dtype
+                            }
+                            datetime_column.append(datetime_obj)
+                            data = list(data_list)
                             print(f"elseif{item}, dtype of data : {dtype}")
                             data_dict[item] = data
                             # print(data)
@@ -488,6 +495,15 @@ class OnlyCsvToParquet():
                 gc.collect()
                 print(f'total columns is: {len(data_dict)}')
                 df = pd.DataFrame(data_dict)
+                # for column in datetime_column:
+                #     df[column['column']] = pd.to_datetime(df[column['column']],format="%m/%d/%Y %I:%M:%S %p", errors="coerce")
+                #     # df[column['column']] = df[column['column']].dt.tz_localize(None)
+                #     df[column['column']] = df[column['column']].dt.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+                #     # df[column['column']] = df[column['column']].dt.strftime("%Y-%m-%d %H:%M:%S.%f")
+                
+                # ipdb.set_trace()
+                # print(df.dtypes)
+                # df.to_parquet(f"{dest_dir}/{file_name.split('.')[0].rstrip('_')}.parquet", engine="pyarrow", index=False)
                 table = pa.Table.from_pandas(df)
                 pq.write_table(table, f"{dest_dir}/{file_name.split('.')[0].rstrip('_')}.parquet")
                 success += 1
@@ -689,21 +705,30 @@ class OnlyCsvToParquet():
             pass
 
         return timestamp
+    
+    def convert_to_datetime_single_file(self, data):
+        timestamp = None
+        try:
+            timestamp = parse(data.strip().replace('"', '').strip())
+            timestamp = timestamp.strftime("%m/%d/%Y %H:%M:%S")
+            timestamp = datetime.timestamp(timestamp)
+        except Exception as e:
+            pass
+
+        return timestamp
 
 def main():
-    csv_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist'
-    csv_file_path = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/TRANS_HIST_.csv'
+    csv_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/3_6'
+    csv_file_path = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/3_6/2_TRANS_HIST_.csv'
     # csv_dir = '/media/zaman/Data Storage/anonymization/anonymized_22'
     # dest_dir = '/media/zaman/Data Storage/anonymization/parquet_22_new'
     dest_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/csv_to_parquet_40/parquet_tables'
     # csv_to_parquet_by_arrow(csv_dir, dest_dir, dest_dir)
     csv_to_parquet = OnlyCsvToParquet()
     csv_to_parquet.csv_to_parquet_single_file(csv_file_path, dest_dir, dest_dir)
-    print("text")
     # csv_to_parquet.csv_to_parquet_multiple_file(csv_dir, dest_dir, dest_dir)
     # csv_to_parquet.csv_to_parquet_by_pyspark_updated(csv_dir, dest_dir, dest_dir)
     # csv_to_parquet.csv_to_parquet_by_pyspark(csv_dir, dest_dir, dest_dir)
-    
 
     return True
 

@@ -14,6 +14,6 @@ def merge_parquet_files(input_folder, output_file):
     print(f"Data merged into {output_file}")
 
 # Example usage
-input_folder = "/media/zaman/Data Storage/anonymization/data_anonymization_new/csv_to_parquet_40/parquet_tables"
-output_file = "/media/zaman/Data Storage/anonymization/data_anonymization_new/csv_to_parquet_40/parquet_tables/trans_hist.parquet"
+input_folder = "/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/csv_to_parquet"
+output_file = "/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/trans_hist.parquet"
 merge_parquet_files(input_folder, output_file)

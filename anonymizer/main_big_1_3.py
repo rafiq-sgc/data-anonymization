@@ -146,10 +146,10 @@ def main(filenames):
     save_dir = '/home/zaman/Downloads/anonymization/seu/split_data'
     # split_file = split_large_csv_file(file_path, save_dir)
 
-    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/9_10' # running all for this directory, 7 big file are remaining
-    out_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
+    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/19_21' # running all for this directory, 7 big file are remaining
+    out_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/anonymized_trans_hists')
     # check_dir = Path('/home/zaman/Downloads/anonymization/seu/anonymized_1')
-    check_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
+    check_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/anonymized_trans_hists')
     anonymized = data_anonymization(file_dir, out_dir, check_dir)
 
 

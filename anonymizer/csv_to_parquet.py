@@ -80,6 +80,7 @@ class CsvToParquet():
                     # for data in col_data:
                     #     data_list.append(str(data))
                     data_list = csv_data[item]
+                    data = []
 
                     if item in ['APPROWVERSION']:
                         data_dict[item] = data_list
@@ -87,7 +88,7 @@ class CsvToParquet():
                     try:
                         print('dtype', dtype)
                         if dtype in ['int', 'smallint', 'tinyint', 'bigint', 'bit']:
-                            data = []
+                            # data = []
                             for x in data_list:
                                 try:
                                     data.append(int(x))

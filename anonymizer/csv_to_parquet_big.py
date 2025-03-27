@@ -50,6 +50,7 @@ class CsvToParquetBig():
         if file_exists is not True: 
             csv.field_size_limit(sys.maxsize)  # maximize field size
             with open(file_path, mode='r', newline='') as csvfile:
+                csvfile.__next__() 
                 reader = csv.DictReader(csvfile)
                 print('file reading is started', reader)
                 # csv_data_list = list(reader)
@@ -79,13 +80,15 @@ class CsvToParquetBig():
                     # for data in col_data:
                     #     data_list.append(str(data))
                     data_list = csv_data[item]
+                    # ipdb.set_trace()
+                
                     data = []
                     if item in ['APPROWVERSION']:
                         data_dict[item] = data_list
                         continue
                     try:
                         if dtype in ['int', 'smallint', 'tinyint', 'bigint', 'bit']:
-                            data = []
+                            # data = []
                             for x in data_list:
                                 try:
                                     data.append(int(x))

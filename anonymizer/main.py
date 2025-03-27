@@ -1,7 +1,7 @@
 import click
 from pathlib import Path
 from csv_to_parquet import CsvToParquet
-from readers.csv import read_csv_with_error, read_csv, split_large_csv_to_multiple, split_large_csv_to_multiple_with_null_error
+from readers.csv import read_csv_with_error, read_csv,read_csv_without_next, split_large_csv_to_multiple, split_large_csv_to_multiple_with_null_error
 from anonymizer.anonymizer import Anonymizer
 from rich import print
 from writers.csv_writer import write_dicts_to_csv, write_dicts_to_multiple_csv
@@ -100,7 +100,7 @@ def data_anonymization(file_dir, out_dir, check_dir=None):
         file_size = os.path.getsize(file_path) / (1024 * 1024)
         print('file size', file_size, file)
 
-        data = read_csv(file_path)
+        data = read_csv_without_next(file_path)
         out_file = Path(out_dir) / file
 
         if data:
@@ -114,7 +114,7 @@ def data_anonymization(file_dir, out_dir, check_dir=None):
             #     if key in anonymizers:
             #         anonymize = True
             #         break
-                
+            # ipdb.set_trace() 
             if anonymize:
                 anonymizer = Anonymizer()
                 is_anonymized = anonymizer.anonymize_and_save(out_file, data)
@@ -143,14 +143,14 @@ def main(filenames):
     # ipdb.set_trace()
 
 
-    large_file_path = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/trans_hist_old/TRANS_HIST_.csv'
-    save_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/trans_hist_old'
+    large_file_path = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/J1_Data_trans/TRANS_HIST_.csv'
+    save_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/trans_hist_splitted'
     # split_file = split_large_csv_file(large_file_path, save_dir)
 
-    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/rest_tables' # running all for this directory, 7 big file are remaining
-    out_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
+    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/1_2'
+    out_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/anonymized_trans_hists')
     # check_dir = Path('/home/zaman/Downloads/anonymization/seu/anonymized_1')
-    check_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
+    check_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/anonymized_trans_hists')
     anonymized = data_anonymization(file_dir, out_dir, check_dir)
 
 

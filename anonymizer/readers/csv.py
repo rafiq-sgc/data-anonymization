@@ -76,7 +76,7 @@ def split_large_csv_to_multiple(data_file, save_dir):
             headers = reader.fieldnames
 
             if headers is not None:
-                count = 0
+                count = 11
                 indx = 0
                 dict_list = []
                 file_name = data_file.split('/')[-1]

@@ -468,19 +468,19 @@ config = {
         # 'STATE': 'random_state'
 
         # Tran_hist
-        'GROUP_NUM':'random_number',
+        # 'GROUP_NUM':'random_number',
         'TRANS_KEY_LINE_NUM':'random_number',
         'ID_NUM':'random_number',
         # 'GL_MASTER_APPID':'random_number',
-        'INVOICE_NUM':'random_name',
+        # 'INVOICE_NUM':'random_name',
         'ACCT_CDE':'random_name',
         'TRANS_DESC':'random_address',
-        'THIRD_PTY_BILL_ID':'random_number',
+        # 'THIRD_PTY_BILL_ID':'random_number',
         'USER_NAME':'random_name',
-        'CHECK_NUM':'random_number',
+        # 'CHECK_NUM':'random_number',
         'TRANS_AMT':'random_number',
         # 'ASSET_NUMBER':'random_name',
-        'TAX_REFUND_AMT':'random_name',
+        # 'TAX_REFUND_AMT':'random_name',
         
         #New added column for new database 04-02-25
         'PrincipalID':'random_number',
@@ -495,6 +495,7 @@ config = {
         'SHIP_TO_CDE':'random_number',
         'REQUESTER_ID_NUM':'random_number',
         'account_number':'random_number',
+        # 'GOVT_FORM_CODE':'random_number',
         # 'RequesterSecurityOwnerID':'random_number',
         # 'ApproverSecurityOwnerID':'random_number',
         # 'LineItemRevisionID':'random_number',
