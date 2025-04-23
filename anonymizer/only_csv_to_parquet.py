@@ -551,126 +551,14 @@ class OnlyCsvToParquet():
             .config("spark.sql.legacy.timeParserPolicy", "LEGACY") \
             .getOrCreate()
         
-        # Define custom schema
-        # schema = StructType([
-        #     StructField(column, StringType(), True) for column in df.columns
-        # ])
-          # Define schema explicitly
-        # print(df.dtypes)
-         # Convert datetime strings to datetime objects using Pandas
-        for column in datetime_column:
-            df[column['column']] = pd.to_datetime(df[column['column']], format='MM/dd/yyyy hh:mm:ss a', errors='coerce')
-        # Convert float columns to decimal
-        decimal_columns = ["TRANS_AMT", "THIRD_PTY_BILL_AMT", "UNDEFINED_11_2_FLD", "WORK_PERCENT", "TAX_REFUND_AMT", "FOR_CUR_TRANS_AMT", "FOR_CUR_DISCOUNT", "EXCHANGE_RATE"]
-        for column in decimal_columns:
-            df[column] = df[column].apply(lambda x: Decimal(x) if pd.notnull(x)  else Decimal(0))
-
-         # Convert float columns to integer
-        # Convert float columns to integer
-        # integer_columns = ["ID_NUM", "CHECK_NUM_NUM", "FEES_SEQUENCE_NUM", "PAYMENT_PLAN_NUM", "GOID"]
-        # for column in integer_columns:
-        #     df[column] = df[column].apply(lambda x: int(float(x)) if pd.notnull(x) else None)
-        df = df.fillna(0).astype({col: 'int64' for col in df.select_dtypes(include=['float64']).columns})
-        # Convert integer columns to timestamp
-        timestamp_columns = ["APPROWVERSION", "UNDEFINED_DTE_FLD", "PAYABLE_CHECK_DTE", "TRANS_DTE", "JOB_TIME"]
-        for column in timestamp_columns:
-            df[column] = pd.to_datetime(df[column], errors='coerce')
-
-        df.dtypes.to_csv("dtypes_update2.csv")
-        # Replace None values with appropriate defaults
-
-        schema = StructType([
-            StructField("APPID", IntegerType(), False),
-            StructField("SOURCE_CDE", StringType(), False),
-            StructField("GROUP_NUM", IntegerType(), False),
-            StructField("TRANS_KEY_LINE_NUM", IntegerType(), False),
-            StructField("TRANS_DTE", TimestampType(), True),
-            StructField("TRANS_AMT", DecimalType(11, 2), False),
-            StructField("TRANS_DESC", StringType(), True),
-            StructField("FOLIO", StringType(), True),
-            StructField("ACCT_CDE", StringType(), True),
-            StructField("GL_MASTER_APPID", IntegerType(), True),
-            StructField("PROJECT_CODE", StringType(), True),
-            StructField("ENCUMB_GL_FLAG", StringType(), False),
-            StructField("ENCUMB_GL_TRANS_ST", StringType(), False),
-            StructField("AP_SBS_ID_NUM", IntegerType(), True),
-            StructField("AP_SBS_CDE_SUBSID", StringType(), True),
-            StructField("INVOICE_NUM", StringType(), True),
-            StructField("ID_NUM", IntegerType(), True),
-            StructField("SUBSID_CDE", StringType(), True),
-            StructField("OFFSET_FLAG", StringType(), True),
-            StructField("SUBSID_TRANS_STS", StringType(), False),
-            StructField("PAYABLE_CHECK_DTE", TimestampType(), True),
-            StructField("CHECK_NUM_ALPHA", StringType(), True),
-            StructField("CHECK_NUM_NUM", IntegerType(), True),
-            StructField("TRANS_PO_NUM_GRP_N", IntegerType(), True),
-            StructField("PO_LINE_NUM", IntegerType(), True),
-            StructField("DISCOUNT", IntegerType(), False),
-            StructField("RECEIPT_NUM", StringType(), True),
-            StructField("ABA_NUM", StringType(), True),
-            StructField("AR_CDE", StringType(), True),
-            StructField("GL_SEL_FLAG", StringType(), True),
-            StructField("PARTIAL_ORDER_PO", StringType(), True),
-            StructField("DISCOUNT_TAKEN", StringType(), True),
-            StructField("THIRD_PTY_BILL_ID", IntegerType(), True),
-            StructField("THIRD_PTY_BILL_AMT", DecimalType(11, 2), False),
-            StructField("OPEN_ITEMS_INV_NUM", StringType(), True),
-            StructField("CHG_FEE_CDE", StringType(), True),
-            StructField("FEES_SEQUENCE_NUM", IntegerType(), True),
-            StructField("OI_SOURCE_CDE", StringType(), True),
-            StructField("OI_GROUP_NUM", IntegerType(), True),
-            StructField("OI_TRANS_KEY_LINE_NUM", IntegerType(), True),
-            StructField("OI_TRANS_HIST_APPID", IntegerType(), True),
-            StructField("OI_ALLOCATION", StringType(), False),
-            StructField("FAP_CDE", StringType(), True),
-            StructField("FUND_CDE", IntegerType(), True),
-            StructField("UNDEFINED_DTE_FLD", TimestampType(), True),
-            StructField("UNDEFINED_1A_FLD_1", StringType(), True),
-            StructField("UNDEFINED_1A_FLD_2", StringType(), True),
-            StructField("UNDEFINED_10A_FLD", StringType(), True),
-            StructField("UNDEFINED_11_2_FLD", DecimalType(11, 2), False),
-            StructField("WORK_PERCENT", DecimalType(5, 2), False),
-            StructField("TAX_REFUND_CDE", StringType(), True),
-            StructField("TAX_REFUND_AMT", DecimalType(11, 2), False),
-            StructField("FOR_CUR_TRANS_AMT", DecimalType(11, 2), False),
-            StructField("FOR_CUR_DISCOUNT", DecimalType(11, 2), False),
-            StructField("CURR_CODE", StringType(), True),
-            StructField("EXCHANGE_RATE", DecimalType(14, 7), False),
-            StructField("PAYMENT_PLAN_CDE", StringType(), True),
-            StructField("PAY_PLAN_SEQ_NUM", IntegerType(), True),
-            StructField("AR_INVOICE_NUM", StringType(), True),
-            StructField("ELIG_1098T", StringType(), True),
-            StructField("CREDIT_MEMO", StringType(), True),
-            StructField("ASSET_NUMBER", StringType(), True),
-            StructField("CHG_TRM_TRAN_HIST", StringType(), True),
-            StructField("CHG_YR_TRAN_HIST", StringType(), True),
-            StructField("GOVT_FORM_CODE", StringType(), True),
-            StructField("GOVT_LABEL_CODE", StringType(), True),
-            StructField("PAYMENT_PLAN_NUM", IntegerType(), True),
-            StructField("GOID", IntegerType(), True),
-            StructField("BILLING_PERIOD_ID", IntegerType(), True),
-            StructField("IS_PAID", StringType(), True),
-            StructField("APPROWVERSION", TimestampType(), False),
-            StructField("USER_NAME", StringType(), True),
-            StructField("JOB_NAME", StringType(), True),
-            StructField("JOB_TIME", TimestampType(), True)
-        ])
-       
         # Convert Pandas DataFrame to PySpark DataFrame
-        spark_df = spark.createDataFrame(df, schema=schema)
+        spark_df = spark.createDataFrame(df)
         # Print schema to verify column names
         print("schema", spark_df.printSchema())
         # Convert columns explicitly
         date_format_str = 'MM/dd/yyyy hh:mm:ss a'
         print("datetime_column", datetime_column)
         default_datetime = '1970-01-01 00:00:00'
-        # for column in datetime_column:
-        #     spark_df = spark_df.withColumn(column['column'], spark_df[column['column']].cast(TimestampType()))
-        #     spark_df = spark_df.fillna({column['column']: default_datetime})
-        # for column in datetime_column:
-        #     spark_df = spark_df.withColumn(column['column'], to_timestamp(spark_df[column['column']], 'MM/dd/yyyy hh:mm:ss a'))
-        #     spark_df = spark_df.fillna({column['column']: default_datetime})
-            
         for column in datetime_column:
             if column['type'] == 'datetime' or column['type'] == 'timestamp':
                 spark_df = spark_df.withColumn(column['column'], to_timestamp(spark_df[column['column']], date_format_str))
@@ -718,17 +606,17 @@ class OnlyCsvToParquet():
         return timestamp
 
 def main():
-    csv_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/3_6'
+    csv_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/others_tables'
     csv_file_path = '/media/zaman/Data Storage/anonymization/data_anonymization_new/data_big/tarns_hist/3_6/2_TRANS_HIST_.csv'
     # csv_dir = '/media/zaman/Data Storage/anonymization/anonymized_22'
     # dest_dir = '/media/zaman/Data Storage/anonymization/parquet_22_new'
     dest_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/csv_to_parquet_40/parquet_tables'
     # csv_to_parquet_by_arrow(csv_dir, dest_dir, dest_dir)
     csv_to_parquet = OnlyCsvToParquet()
-    csv_to_parquet.csv_to_parquet_single_file(csv_file_path, dest_dir, dest_dir)
+    # csv_to_parquet.csv_to_parquet_single_file(csv_file_path, dest_dir, dest_dir)
     # csv_to_parquet.csv_to_parquet_multiple_file(csv_dir, dest_dir, dest_dir)
     # csv_to_parquet.csv_to_parquet_by_pyspark_updated(csv_dir, dest_dir, dest_dir)
-    # csv_to_parquet.csv_to_parquet_by_pyspark(csv_dir, dest_dir, dest_dir)
+    csv_to_parquet.csv_to_parquet_by_pyspark(csv_dir, dest_dir, dest_dir)
 
     return True
 

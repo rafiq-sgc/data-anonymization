@@ -101,7 +101,7 @@ def data_anonymization(file_dir, out_dir, check_dir=None):
         file_size = os.path.getsize(file_path) / (1024 * 1024)
         print('file size', file_size, file)
 
-        data = read_csv_without_next(file_path)
+        data = read_csv(file_path)
         out_file = Path(out_dir) / file
         # ipdb.set_trace()
         
@@ -147,7 +147,7 @@ def main(filenames):
     save_dir = '/home/zaman/Downloads/anonymization/seu/split_data'
     # split_file = split_large_csv_file(file_path, save_dir)
 
-    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/rest_tables' # running all for this directory, 7 big file are remaining
+    file_dir = '/media/zaman/Data Storage/anonymization/data_anonymization_new/main_csv_file_as_zip/J1_Data_21_04_2025' # running all for this directory, 7 big file are remaining
     out_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
     # check_dir = Path('/home/zaman/Downloads/anonymization/seu/anonymized_1')
     check_dir = Path('/media/zaman/Data Storage/anonymization/data_anonymization_new/anonymized_rest_tables')
